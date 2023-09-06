@@ -10,6 +10,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v2
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
     - name: Build the Docker image
       run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
     - name: Docker Login
@@ -39,7 +43,7 @@ jobs:
         # List of metadata for an image
         labels: ${{ steps.meta.outputs.labels }} # optional
         # List of target platforms for build
-        platforms: linux/amd64 # optional
+        platforms: linux/amd64,linux/arm64,linux/arm # optional
         # Push is a shorthand for --output=type=registry
         push: true # optional, default is false
         # List of tags
