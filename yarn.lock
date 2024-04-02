@@ -1528,10 +1528,10 @@ npmlog@^5.0.1:
     gauge "^3.0.0"
     set-blocking "^2.0.0"
 
-nsfwjs@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/nsfwjs/-/nsfwjs-3.0.0.tgz#4a1ed6f365b8e5bd5e6ba3ef76c7c81d236130e4"
-  integrity sha512-A7si+H96Q4gbtjjtmfcS25JrNimnJMTs2e6kveTMo0M+ZrRfjDiCV9UxpKPpXRTyoI6A7PHrUGM4S3R3PbFpEQ==
+nsfwjs@^4.1.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/nsfwjs/-/nsfwjs-4.1.0.tgz#021b7b38a043630e5f1f66bc7ef5d65afaf1eb59"
+  integrity sha512-2V27SoNXUJbAAi+vW8RHJbONs2AHa1odmjlRsVX2mirxR4IGt1OIzZ49IXgPVg6nktwA8Su61YEJql7VreEKyg==
 
 object-assign@^4.1.1:
   version "4.1.1"
