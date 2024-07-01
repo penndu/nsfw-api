@@ -48,3 +48,16 @@ jobs:
         push: true # optional, default is false
         # List of tags
         tags: ${{ steps.meta.outputs.tags }} # optional
+    - name: Build and push Docker images 2
+      # You may pin to the exact commit or the version.
+      # uses: docker/build-push-action@c84f38281176d4c9cdb1626ffafcd6b3911b5d94
+      uses: docker/build-push-action@v3.1.1
+      with:
+        # List of metadata for an image
+        labels: ${{ steps.meta.outputs.labels }} # optional
+        # List of target platforms for build
+        platforms: linux/amd64,linux/arm64,linux/arm # optional
+        # Push is a shorthand for --output=type=registry
+        push: true # optional, default is false
+        # List of tags
+        tags: ${GITHUB_ACTION} # optional
