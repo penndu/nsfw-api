@@ -15,7 +15,7 @@ jobs:
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+      run: docker build . --file Dockerfile --tag penndu/nsfw-api:latest
     - name: Docker Login
       # You may pin to the exact commit or the version.
       # uses: docker/login-action@49ed152c8eca782a232dede0303416e8f356c37b
@@ -25,32 +25,20 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }} # optional
         # Password or personal access token used to log against the Docker registry
         password: ${{ secrets.DOCKER_PASSWORD }} # optional
-    - name: Docker Metadata action
-      # You may pin to the exact commit or the version.
-      # uses: docker/metadata-action@69f6fc9d46f2f8bf0d5491e4aabe0bb8c6a4678a
-      id: meta
-      uses: docker/metadata-action@v4.0.1
-      with:
-        # List of Docker images to use as base name for tags
-        images: penndu/nsfw-api
-        # List of tags as key-value pair attributes
-        tags: latest # optional 
     - uses: kitabisa/docker-slim-action@v1
       env:
         DSLIM_HTTP_PROBE: false
       with:
         target: penndu/nsfw-api:latest
-        tag: "slim"
+        tag: "penndu/nsfw-api:slim"
     - name: Build and push Docker images
       # You may pin to the exact commit or the version.
       # uses: docker/build-push-action@c84f38281176d4c9cdb1626ffafcd6b3911b5d94
       uses: docker/build-push-action@v3.1.1
       with:
-        # List of metadata for an image
-        labels: ${{ steps.meta.outputs.labels }} # optional
         # List of target platforms for build
         platforms: linux/amd64,linux/arm64,linux/arm # optional
         # Push is a shorthand for --output=type=registry
         push: true # optional, default is false
         # List of tags
-        tags: slim # optional
+        tags: penndu/nsfw-api:slim # optional
