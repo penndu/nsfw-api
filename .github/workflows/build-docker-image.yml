@@ -34,7 +34,9 @@ jobs:
         # List of Docker images to use as base name for tags
         images: penndu/nsfw-api
         # List of tags as key-value pair attributes
-        tags: latest # optional
+        tags: |
+          type=raw,value=latest
+          type=raw,value={{date 'YYYYMMDD'}}
     - name: Build and push Docker images
       # You may pin to the exact commit or the version.
       # uses: docker/build-push-action@c84f38281176d4c9cdb1626ffafcd6b3911b5d94
