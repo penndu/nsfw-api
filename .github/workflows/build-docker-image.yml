@@ -45,7 +45,7 @@ jobs:
         # List of metadata for an image
         labels: ${{ steps.meta.outputs.labels }} # optional
         # List of target platforms for build
-        platforms: linux/amd64,linux/arm64,linux/arm # optional
+        platforms: linux/amd64 # optional
         # Push is a shorthand for --output=type=registry
         push: true # optional, default is false
         # List of tags
