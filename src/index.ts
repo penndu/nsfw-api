@@ -1,5 +1,6 @@
 import 'reflect-metadata';
 import 'module-alias/register';
+import 'app/util-polyfill';
 
 import express from 'express';
 import bodyParser from 'body-parser';
