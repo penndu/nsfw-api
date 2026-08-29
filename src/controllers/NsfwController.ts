@@ -32,9 +32,14 @@ export class NsfwController {
         .json({error: 'Specify image'});
     }
 
-    const data = await this.classifier.classify(request.file.buffer);
-
-    return response.json(data);
+    try {
+      const data = await this.classifier.classify(request.file.buffer);
+      return response.json(data);
+    } catch (error) {
+      return response
+        .status(400)
+        .json({error: 'Unsupported or corrupt image'});
+    }
   }
 
   @Post('/classify-many', uploadMany)
@@ -47,9 +52,14 @@ export class NsfwController {
         .json({error: 'Specify images'});
     }
 
-    const buffers = files.map(file => file.buffer);
-    const data = await this.classifier.classifyMany(buffers);
-
-    return response.json(data);
+    try {
+      const buffers = files.map(file => file.buffer);
+      const data = await this.classifier.classifyMany(buffers);
+      return response.json(data);
+    } catch (error) {
+      return response
+        .status(400)
+        .json({error: 'Unsupported or corrupt image'});
+    }
   }
 }
