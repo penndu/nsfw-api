@@ -6,6 +6,8 @@ import {model as config} from 'app/config/model';
 
 tf.enableProdMode();
 
+const CLASSIFY_CONCURRENCY = 3;
+
 export class NsfwImageClassifier {
   #model?: NSFWJS;
 
@@ -23,7 +25,8 @@ export class NsfwImageClassifier {
   }
 
   async classifyMany(imagesBuffers: Buffer[]) {
-    return await Promise.all(imagesBuffers.map(buffer => this.classify(buffer)));
+    const tasks = imagesBuffers.map(buffer => () => this.classify(buffer));
+    return this.#runWithLimit(tasks, CLASSIFY_CONCURRENCY);
   }
 
   async #getModel(): Promise<NSFWJS> {
@@ -42,5 +45,25 @@ export class NsfwImageClassifier {
     }
 
     return result;
+  }
+
+  async #runWithLimit<T>(tasks: (() => Promise<T>)[], concurrency: number): Promise<T[]> {
+    if (tasks.length === 0) return [];
+
+    const results: T[] = new Array(tasks.length);
+    let cursor = 0;
+
+    const worker = async () => {
+      while (true) {
+        const i = cursor++;
+        if (i >= tasks.length) return;
+        results[i] = await tasks[i]();
+      }
+    };
+
+    const workerCount = Math.min(concurrency, tasks.length);
+    await Promise.all(Array.from({length: workerCount}, () => worker()));
+
+    return results;
   }
 }
