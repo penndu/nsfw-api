@@ -1,6 +1,6 @@
 import {Controller, Post} from 'simple-ts-express-decorators';
 import multer, {memoryStorage} from 'multer';
-import {Request, Response} from 'express';
+import {Request, RequestHandler, Response} from 'express';
 import {NsfwImageClassifier} from 'app/NsfwImageClassifier';
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB per image
@@ -10,6 +10,12 @@ const upload = multer({
   limits: {fileSize: MAX_FILE_SIZE},
 });
 
+// Workaround: @types/multer@2 nests @types/express@4, which clashes with
+// the project's @types/express@5 (Request.param removed in v5). The middleware
+// is runtime-compatible — we just align the type with our express version.
+const uploadSingle = upload.single('image') as unknown as RequestHandler;
+const uploadMany = upload.array('images', 10) as unknown as RequestHandler;
+
 @Controller()
 export class NsfwController {
   classifier: NsfwImageClassifier;
@@ -18,7 +24,7 @@ export class NsfwController {
     this.classifier = new NsfwImageClassifier();
   }
 
-  @Post('/classify', upload.single('image'))
+  @Post('/classify', uploadSingle)
   async classify(request: Request, response: Response) {
     if (!request.file) {
       return response
@@ -31,7 +37,7 @@ export class NsfwController {
     return response.json(data);
   }
 
-  @Post('/classify-many', upload.array('images', 10))
+  @Post('/classify-many', uploadMany)
   async classifyMany(request: Request, response: Response) {
     const files = request.files as Express.Multer.File[] | undefined;
 
