@@ -37,7 +37,7 @@ jobs:
         tags: |
           type=raw,value=latest
           type=raw,value={{date 'YYYYMMDDHHMMSS'}}
-    - name: Build and push Docker images
+    - name: Build and push Docker images (default)
       # You may pin to the exact commit or the version.
       # uses: docker/build-push-action@c84f38281176d4c9cdb1626ffafcd6b3911b5d94
       uses: docker/build-push-action@v6
@@ -50,3 +50,26 @@ jobs:
         push: true # optional, default is false
         # List of tags
         tags: ${{ steps.meta.outputs.tags }} # optional
+    - name: Generate slim tags
+      id: slim_meta
+      shell: bash
+      env:
+        TAGS: ${{ steps.meta.outputs.tags }}
+      run: |
+        # Prefix each tag with "slim-"
+        echo "tags=$(echo "$TAGS" | sed 's/^/slim-/')" >> "$GITHUB_OUTPUT"
+    - name: Build and push Docker images (slim)
+      # You may pin to the exact commit or the version.
+      # uses: docker/build-push-action@c84f38281176d4c9cdb1626ffafcd6b3911b5d94
+      uses: docker/build-push-action@v6
+      with:
+        # List of metadata for an image
+        labels: ${{ steps.meta.outputs.labels }} # optional
+        # List of target platforms for build
+        platforms: linux/amd64 # optional
+        # Slim variant: models/min (22MB) instead of models/default (85MB)
+        build-args: modelType=min
+        # Push is a shorthand for --output=type=registry
+        push: true # optional, default is false
+        # List of tags, slim-prefixed
+        tags: ${{ steps.slim_meta.outputs.tags }}
