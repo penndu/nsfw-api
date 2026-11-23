@@ -56,8 +56,11 @@ jobs:
       env:
         TAGS: ${{ steps.meta.outputs.tags }}
       run: |
-        # Prefix each tag with "slim-"
-        echo "tags=$(echo "$TAGS" | sed 's/^/slim-/')" >> "$GITHUB_OUTPUT"
+        # Build slim-prefixed tags by stripping repository name and adding prefix
+        slim=$(echo "$TAGS" | awk '{split($0,a,":"); print "slim-"a[2]}')
+        echo "tags<<EOF" >> "$GITHUB_OUTPUT"
+        echo "$slim" >> "$GITHUB_OUTPUT"
+        echo "EOF" >> "$GITHUB_OUTPUT"
     - name: Build and push Docker images (slim)
       # You may pin to the exact commit or the version.
       # uses: docker/build-push-action@c84f38281176d4c9cdb1626ffafcd6b3911b5d94
